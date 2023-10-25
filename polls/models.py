@@ -1,23 +1,26 @@
-import datetime
 from django.db import models
 from django.utils import timezone
 
 
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-    
+class Stanowisko(models.Model):
+    nazwa = models.CharField(max_length=60)
+    opis = models.CharField(max_length=60, blank=True)
     def __str__(self):
-        return self.question_text
-    
-    def was_published_recently(self):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        return f"{self.nazwa}"
 
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+class Plec(models.IntegerChoices):
+    MEZCZYZNA = 1
+    KOBIETA = 2
+    INNE = 3
     
+class Osoba(models.Model):
+    imie = models.CharField(max_length=60)
+    nazwisko = models.CharField(max_length=60)
+    plec = models.IntegerField(choices=Plec.choices)
+    stanowisko = models.ForeignKey(Stanowisko, null=True, blank=True, on_delete=models.SET_NULL)
+    data_dodania = models.DateField(auto_now_add=True)
     def __str__(self):
-        return self.question_text
+        return f"{self.imie} {self.nazwisko}"
+    
+    class Meta:
+        ordering = ["nazwisko"]

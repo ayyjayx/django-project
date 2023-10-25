@@ -1,0 +1,7 @@
+1. Osoba.objects.all()
+2. Osoba.objects.get(pk=3)
+3. Osoba.objects.filter(imie__startswith='A')
+4. Osoba.objects.order_by().values('stanowisko').distinct()
+5. Stanowisko.objects.order_by('-nazwa')
+6. osoba4 = Osoba(imie="Kuba", nazwisko="Cordovsky", plec=1, stanowisko=Stanowisko.objects.get(pk=1))
+   osoba4.save()
