@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Stanowisko, Plec, Osoba
+from .models import Stanowisko, Osoba
+import datetime
 
 class StanowiskoSerializer(serializers.Serializer):
     nazwa = serializers.CharField(required=True)
@@ -20,3 +21,26 @@ class OsobaModelSerializer(serializers.ModelSerializer):
         fields = ['imie', 'nazwisko', 'plec', 'stanowisko', 'data_dodania']
         read_only_fields = ['data_dodania']
         
+    def validate_imie(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError("Imie ma zawierac tylko litery.")
+        return value
+
+    def validate_data_dodania(self, value):
+        if value > datetime.now():
+            raise serializers.ValidationError("Data nie moze byc z przyszlosci.")
+        return value
+    
+    # def create(self, validated_data):
+    #     return Osoba.objects.create(**validated_data)
+    
+    
+    
+    def update(self, instance, validated_data):
+        instance.imie = validated_data.get('imie', instance.imie)
+        instance.nazwisko = validated_data.get('nazwisko', instance.nazwisko)
+        instance.plec = validated_data.get('plec', instance.plec)
+        instance.stanowisko = validated_data.get('stanowisko', instance.stanowisko)
+        instance.data_dodanie = validated_data.get('data_dodania', instance.data_dodania)
+        instance.save()
+        return instance
