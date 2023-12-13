@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 class Stanowisko(models.Model):
@@ -19,6 +19,8 @@ class Osoba(models.Model):
     plec = models.IntegerField(choices=Plec.choices)
     stanowisko = models.ForeignKey(Stanowisko, null=True, blank=True, on_delete=models.SET_NULL)
     data_dodania = models.DateField(auto_now_add=True)
+    wlasciciel = models.ForeignKey(User, related_name='Osoba', on_delete=models.CASCADE)
+    
     def __str__(self):
         return f"{self.imie} {self.nazwisko}"
     

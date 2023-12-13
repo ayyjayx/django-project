@@ -1,6 +1,8 @@
 from django.contrib import admin
-
 from .models import Osoba, Stanowisko
+from rest_framework.authtoken.admin import TokenAdmin
+
+TokenAdmin.raw_id_fields = ['user']
 
 class StanowiskoAdmin(admin.ModelAdmin):
     list_filter = ["nazwa"]

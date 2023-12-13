@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Stanowisko, Osoba
+from django.contrib.auth.models import User
 import datetime
 
 class StanowiskoSerializer(serializers.Serializer):
@@ -18,8 +19,9 @@ class StanowiskoSerializer(serializers.Serializer):
 class OsobaModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Osoba
-        fields = ['imie', 'nazwisko', 'plec', 'stanowisko', 'data_dodania']
-        read_only_fields = ['data_dodania']
+        fields = ['imie', 'nazwisko', 'plec', 'stanowisko', 'data_dodania', 'wlasciciel']
+        read_only_fields = ['data_dodania', 'wlasciciel']
+        wlasciciel = serializers.ReadOnlyField(source='User.username')
         
     def validate_imie(self, value):
         if not value.isalpha():
@@ -30,11 +32,6 @@ class OsobaModelSerializer(serializers.ModelSerializer):
         if value > datetime.now():
             raise serializers.ValidationError("Data nie moze byc z przyszlosci.")
         return value
-    
-    # def create(self, validated_data):
-    #     return Osoba.objects.create(**validated_data)
-    
-    
     
     def update(self, instance, validated_data):
         instance.imie = validated_data.get('imie', instance.imie)
