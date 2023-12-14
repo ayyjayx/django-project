@@ -42,6 +42,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken'
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'polls.permissions.CustomDjangoModelPermissions',
+    ]
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

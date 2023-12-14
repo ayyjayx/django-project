@@ -1,7 +1,8 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.core.exceptions import PermissionDenied
 from rest_framework import status
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from django.contrib.auth.decorators import login_required, permission_required
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -16,6 +17,8 @@ def index(request):
     return HttpResponse("Hello World. You are at the poll index.")
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@permission_required('polls.view_stanowisko')
 def stanowisko_list_all(request):
     if request.method == 'GET':
         stanowiska_list = Stanowisko.objects.all()
@@ -64,6 +67,9 @@ def osoba_list_all(request):
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def osoba(request, pk):
+    # if not request.user.has_perm('polls.view_osoba'):
+    if not request.user.has_perm('polls.can_view_other_persons'):
+        raise PermissionDenied()
     try:
         osoba = Osoba.objects.get(pk=pk)
     except Osoba.DoesNotExist:

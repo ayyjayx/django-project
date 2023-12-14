@@ -7,6 +7,10 @@ class Stanowisko(models.Model):
     opis = models.CharField(max_length=60, blank=True)
     def __str__(self):
         return f"{self.nazwa}"
+    class Meta:
+        permissions = [
+            ("can_view_other_positions", "Pozwala na spojrzenie na inne stanowiska")
+        ]
 
 class Plec(models.IntegerChoices):
     MEZCZYZNA = 1
@@ -26,3 +30,6 @@ class Osoba(models.Model):
     
     class Meta:
         ordering = ["nazwisko"]
+        permissions = [
+            ("can_view_other_persons", "Pozwala na spojrzenie na inne osoby")
+        ]
